@@ -1,0 +1,46 @@
+# Fabric Stitch: process_article_with_topic
+# This stitch chains together the following patterns in order:
+# 1. analyze_articles
+# 2. extract_article_content_related_to_topic
+# 3. create_article_rough_draft
+# 4. enrich_article
+# 5. remove_article_content_related_to_topic
+# 6. enrich_article_polished
+
+# Usage: pipe your input into this stitch to process articles through all steps.
+
+(
+  echo "beginning of content input"
+  # Placeholder for input, e.g., cat article.txt
+  echo "$ARTICLE_CONTENT"
+  echo "end of content input"
+
+  echo "beginning of AI instructions (prompt)"
+  cat ~/.config/fabric/patterns/analyze_articles/prompt.md
+  echo "end of AI instructions (prompt)"
+
+  echo "beginning of AI output: analyze_articles"
+  echo "$ARTICLE_CONTENT" | f -p analyze_articles -m gpt-3.5-turbo
+  echo "end of AI output: analyze_articles"
+
+  echo "beginning of AI output: extract_article_content_related_to_topic"
+  echo "$ARTICLE_CONTENT" | f -p extract_article_content_related_to_topic -m gpt-3.5-turbo
+  echo "end of AI output: extract_article_content_related_to_topic"
+
+  echo "beginning of AI output: create_article_rough_draft"
+  echo "$ARTICLE_CONTENT" | f -p create_article_rough_draft -m gpt-3.5-turbo
+  echo "end of AI output: create_article_rough_draft"
+
+  echo "beginning of AI output: enrich_article"
+  echo "$ARTICLE_CONTENT" | f -p enrich_article -m gpt-3.5-turbo
+  echo "end of AI output: enrich_article"
+
+  echo "beginning of AI output: enrich_article_polished"
+  echo "$ARTICLE_CONTENT" | f -p enrich_article_polished -m gpt-3.5-turbo
+  echo "end of AI output: enrich_article_polished"
+
+  echo "beginning of AI output: remove_article_content_related_to_topic"
+  echo "$ARTICLE_CONTENT" | f -p remove_article_content_related_to_topic -m gpt-3.5-turbo
+  echo "end of AI output: remove_article_content_related_to_topic"
+
+) | f -rp process_article_with_topic -m o1-preview-2024-09-12
