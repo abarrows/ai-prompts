@@ -1,42 +1,42 @@
+# Workflow: Raise Autofilled Pull Request
+
+## Description
+
+This workflow is intended to quickly raise a pull request.  The pull request will be raised via the github cli.  The values passed into the command will be enriched by you after carefully examining the changes.  You will respond with permission to execute the command and display the information for my review below the command.
+
 ---
-description: This workflow is intended to quickly raise a pull request on a given changeset or patch.  This uses sensible default values for PR information with the option to override certain values if mentioned in the prompt.
----
 
-# You must raise a pull request with team best-practiced defaults for the values described below
+## Instructions
 
-Examine the prompt for any overrides to the values below. You must also
-identify if a patch is present in the prompt, if so the user should have
-recommended a name for the feature branch. If not, ask the user for a short
-description of the changes and use
-
-You must always adhere to the branch naming format of:
+I will provide the branch for you to raise the pull request from.
+You must always adhere to the branch naming format defaulting to:
 feature/WR-XXXX-<pull-request-title-hyphenated>
 
-Use the Github MCP to create this branch. Apply the patch changes to this
-branch. Add, commit, and push the changes to this newly created branch. For
-your commit message, generate a detaile description of the changes based on
-the list_commits in this feature branch. You must always use conventional commit
-format.
+If a hotfix is mentioned in my prompt the format would be:
+hotfix/WR-XXXX-<pull-request-title-hyphenated>
 
-Use the Github MCP to raise the pull request with the following information -
+If a release is mentioned in my prompt the format would be:
+release/WR-XXXX-<pull-request-title-hyphenated>
 
-owner: Retail-Success
-repo: the current repository's name
-head: the name of the feature branch
-base: develop
-title: <name of the feature branch>
-body: Generate draft based on the list_commits in this feature branch.
-Ensure your changes are committed and pushed to your feature branch on GitHub.
-Identify the following information:
-Repository owner (username or organization)
-Repository name
-Name of the branch with your changes (feature branch)
-Name of the base branch to merge into the `develop`
-Pull request title and description
-Use the GitHub MCP to create the pull request:
-Call the create_pull_request action with:
+1. Take note of the <pull-request-title-hyphenated> which should hint to you what the pull request and branch are focused on.
+2. Carefully analyze the changed files, the commit messages, and the
+   contributors so you can summarize these changes into a pull request description.  One to two
+   paragraphs and/or a bullet list of changes is expected.  Leave out any
+   changes with mundane details like `updating props` or `fixing state`.  Find
+   the repository name of the branch provided.
+3. Populate the pull request description and any other relevant information
+   where I ask for your input in an html comment.
+4. Execute the following script and provide me with your output so I can review it:
 
-assignee: current user found in the list of commits
+   ```bash
+   gh pr create
 
-Confirm the pull request was created successfully by checking the returned PR number or URL.
-(Optional) Share the pull request link with reviewers or stakeholders.
+  --repo <!-- The repository name you identified in step 2 -->
+  --base develop
+  --head <!-- The feature branch I provided you in step 1 -->
+  --title "<!-- The feature branch I provided you in step 1 -->"
+  --body "<!-- The pull request description you crafted from step 1 -->"
+  --assignee <!-- The assignee you identified in step 1 -->
+  --reviewers "copilot, taib-rs, gisanchez, dominicp21, <!-- And any other reviewers you identified in step 2. -->"
+
+5. Confirm the pull request was created successfully by checking the returned PR number or URL.
