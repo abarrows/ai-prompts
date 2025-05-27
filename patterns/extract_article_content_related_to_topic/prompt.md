@@ -1,8 +1,8 @@
-Using the following list of titles, extract the full `"body"` content for each training data object in `data-confluence-all.json` that matches:
+Scan through the list of training data objects, extract the full `"body"` content for each training data object in `data-confluence-all.json` that contains any matching content related to the topic:
 
-[INSERT MARKDOWN-LIST OF TITLES HERE]
+[INSERT TOPIC HERE]
 
-Return each result in Markdown format like this:
+Return the matching content found in each body's value in Markdown format like this:
 
 ### Title A
 
