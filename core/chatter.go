@@ -32,6 +32,13 @@ type Chatter struct {
 
 // Send processes a chat request and applies any file changes if using the create_coding_feature pattern
 func (o *Chatter) Send(request *common.ChatRequest, opts *common.ChatOptions) (session *fsdb.Session, err error) {
+	modelToUse := opts.Model
+	if modelToUse == "" {
+		modelToUse = o.model // Default to the model set in the Chatter struct
+	}
+	if o.vendor.NeedsRawMode(modelToUse) {
+		opts.Raw = true
+	}
 	if session, err = o.BuildSession(request, opts.Raw); err != nil {
 		return
 	}
@@ -192,26 +199,35 @@ func (o *Chatter) BuildSession(request *common.ChatRequest, raw bool) (session *
 	}
 
 	if raw {
-		// In raw mode, combine system message (potentially with strategy) and user message into a single user message
+		// In raw mode, we want to avoid duplicating the input that's already in the pattern
+		var finalContent string
 		if systemMessage != "" {
-			if request.Message != nil {
-				// Prepend system message to user content, ensuring user input is preserved
-				request.Message.Content = fmt.Sprintf("%s\n\n%s", systemMessage, request.Message.Content)
-				request.Message.Role = goopenai.ChatMessageRoleUser // Ensure role is User in raw mode
+			// If we have a pattern, it already includes the user input
+			if request.PatternName != "" {
+				finalContent = systemMessage
 			} else {
-				// If no user message, create one with the system content, marked as User role
-				request.Message = &goopenai.ChatCompletionMessage{Role: goopenai.ChatMessageRoleUser, Content: systemMessage}
+				// No pattern, combine system message with user input
+				finalContent = fmt.Sprintf("%s\n\n%s", systemMessage, request.Message.Content)
 			}
-		} // else: no system message, user message (if any) remains unchanged
-	} else {
-		// Not raw mode, append system message separately if it exists
+			request.Message = &goopenai.ChatCompletionMessage{
+				Role:    goopenai.ChatMessageRoleUser,
+				Content: finalContent,
+			}
+		}
+		// After this, if request.Message is not nil, append it
+		if request.Message != nil {
+			session.Append(request.Message)
+		}
+	} else { // Not raw mode
 		if systemMessage != "" {
 			session.Append(&goopenai.ChatCompletionMessage{Role: goopenai.ChatMessageRoleSystem, Content: systemMessage})
 		}
-	}
-
-	if request.Message != nil {
-		session.Append(request.Message)
+		// If a pattern was used (request.PatternName != ""), its output (systemMessage)
+		// already incorporates the user input (request.Message.Content via GetApplyVariables).
+		// So, we only append the direct user message if NO pattern was used.
+		if request.PatternName == "" && request.Message != nil {
+			session.Append(request.Message)
+		}
 	}
 
 	if session.IsEmpty() {

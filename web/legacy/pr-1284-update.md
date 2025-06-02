@@ -1,7 +1,10 @@
-This Cummulative PR adds several Web UI and functionality improvements to make pattern selection more intuitive with the addition of pattern descriptions, ability to save favorite patterns, a Pattern TAG system, powerful multilingual capabilities, PDF-to-markdown functionnalities, a help reference section, more robust Youtube processing and a variety of other ui improvements. 
+This Cumulative PR adds several Web UI and functionality improvements to make pattern selection more intuitive with the addition of pattern descriptions, ability to save favorite patterns, a Pattern TAG system, powerful multilingual capabilities, PDF-to-markdown functionalities, a help reference section, more robust Youtube processing and a variety of other ui improvements.
 
 ## 🎥 Demo Video
-https://youtu.be/XMzjgqvdltM
+https://youtu.be/bhwtWXoMASA
+
+updated to include latest enhancement: Pattern tiles search (last min.)
+https://youtu.be/fcVitd4Kb98
 
 
 
@@ -31,6 +34,11 @@ https://youtu.be/XMzjgqvdltM
 ### 4. Enhanced Tag Management Integration
 
 The tag filtering system has been deeply integrated into the Pattern Selection interface through several UI enhancements:
+
+### 5. Strategy flags
+- strategies are fetch from .config/fabric/strategies for server processing
+- for gui, they are fetched from static/strategies 
+
 
 1. **Dual-Position Tag Panel**
    - Sliding panel positioned to the right of pattern modal
