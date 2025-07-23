@@ -1,8 +1,4 @@
-Scan through the list of training data objects, extract the full `"body"` content for each training data object in `data-confluence-all.json` that contains any matching content related to the topic:
-
-[INSERT TOPIC HERE]
-
-Return the matching content found in each body's value in Markdown format like this:
+Scan through the returned list of training data objects you found and extract the full `"body"` content for each training data object. Return the matching content found in each body's value in Markdown format like this:
 
 ### Title A
 
